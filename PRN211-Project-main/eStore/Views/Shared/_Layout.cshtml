@@ -1,0 +1,178 @@
+﻿@using System.Security.Claims
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - eStore</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+          rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.css"
+          rel="stylesheet" />
+    <link rel="icon" type="image/png" href="https://scontent.fhan5-1.fna.fbcdn.net/v/t39.30808-6/272028866_110061908250795_8975520843648918379_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=fH_T6LGFYacAX-A8bbP&_nc_ht=scontent.fhan5-1.fna&oh=00_AfA0QfMvA0ieKlYkWNXEvLk1sXqM7TCRLvHMN-D74OpyFw&oe=641F4EE1">
+</head>
+<body>
+    <header>
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <!-- Container wrapper -->
+            <div class="container-fluid">
+                <!-- Toggle button -->
+                <button class="navbar-toggler"
+                        type="button"
+                        data-mdb-toggle="collapse"
+                        data-mdb-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <!-- Collapsible wrapper -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @if (User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Name)).Value.Equals("Admin"))
+                        { // Admin
+                            <!-- Navbar brand -->
+                            <a class="navbar-brand mt-2 mt-lg-0 pointer-event" asp-controller="Member" asp-action="Index">
+                                <img src="data:image/png;base64,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"
+                                     height="35"
+                             alt="MDB Logo"
+                             loading="lazy" class="" />
+                            </a>
+                            <!-- Left links -->
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Member" asp-action="Index">Member Management</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Product" asp-action="Index">Product Management</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Order" asp-action="Index">Order Management</a>
+                                </li>
+                            </ul>
+                            <!-- Left links -->
+                        }
+                        else
+                        { // User
+                            <!-- Navbar brand -->
+                            <a class="navbar-brand mt-2 mt-lg-0 pointer-event" asp-controller="Product" asp-action="Index">
+                                <img src="data:image/png;base64,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"
+                             height="35"
+                             alt="MDB Logo"
+                             loading="lazy" class="" />
+                            </a>
+                            <!-- Left links -->
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Product" asp-action="Index">Shopping</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Order" asp-action="Index">My Orders</a>
+                                </li>
+                            </ul>
+                            <!-- Left links -->
+                        }
+                    }
+
+                </div>
+                <!-- Collapsible wrapper -->
+                <!-- Right elements -->
+                <div class="d-flex align-items-center">
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @if (User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Name)).Value.Equals("Admin"))
+                        { // Admin
+
+                            <!-- Avatar -->
+                            <div class="dropdown">
+                                <a class="dropdown-toggle d-flex align-items-center hidden-arrow"
+                                   href="#"
+                                   id="navbarDropdownMenuAvatar"
+                                   role="button"
+                                   data-mdb-toggle="dropdown"
+                                   aria-expanded="false">
+                                    <!-- Replace the image with three horizontal bars icon -->
+                                    <i class="fas fa-bars fa-lg"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end"
+                                    aria-labelledby="navbarDropdownMenuAvatar">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Logout" asp-action="Index">Logout</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        }
+                        else
+                        { // User
+                            <!-- Icon -->
+                            <a class="text-reset me-3" asp-controller="Cart" asp-action="Index">
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+
+
+                            <!-- Avatar -->
+                            <div class="dropdown">
+                                <a class="dropdown-toggle d-flex align-items-center hidden-arrow"
+                           href="#"
+                           id="navbarDropdownMenuAvatar"
+                           role="button"
+                           data-mdb-toggle="dropdown"
+                           aria-expanded="false">
+                                    <i class="fas fa-bars fa-lg"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="navbarDropdownMenuAvatar">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Member" asp-action="Profile">Edit My profile</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Logout" asp-action="Index">Logout</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                    }
+
+
+                </div>
+                <!-- Right elements -->
+            </div>
+            <!-- Container wrapper -->
+        </nav>
+        <!-- Navbar -->
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            @*&copy; 2021 - eStore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>*@
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- MDB -->
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
